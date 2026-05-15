@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} - SAIFI'S</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #8B7355;
+            --accent-color: #ff6b6b;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow: 0 2px 15px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); overflow-x: hidden; }
+
+        /* Top Bar */
+        .top-bar { background-color: #8B7355; color: #fff; padding: 10px 5%; text-align: center; font-size: 12px; font-weight: 500; letter-spacing: 2px; }
+        .top-bar-content { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .top-bar-content i { font-size: 14px; animation: truckBounce 2s infinite; }
+        @keyframes truckBounce { 0%,100%{transform:translateX(0)} 50%{transform:translateX(3px)} }
+        .top-bar-content span { font-weight: 600; }
+
+        /* Navbar */
+        .navbar { background:#fff; padding:15px 5%; box-shadow:var(--shadow); position:sticky; top:0; z-index:999; }
+        .nav-container { display:flex; align-items:center; justify-content:space-between; max-width:1400px; margin:0 auto; }
+        .nav-left { display:flex; align-items:center; gap:15px; flex:0 0 auto; }
+        .sidebar-toggle,.search-icon-btn { background:none; border:none; font-size:22px; cursor:pointer; color:var(--primary-color); padding:5px; transition:var(--transition); }
+        .sidebar-toggle:hover,.search-icon-btn:hover { color:var(--secondary-color); }
+        .nav-center { position:absolute; left:50%; transform:translateX(-50%); }
+        .brand-logo { font-family:'Playfair Display',serif; font-size:30px; font-weight:700; color:var(--primary-color); text-decoration:none; letter-spacing:3px; transition:var(--transition); }
+        .brand-logo:hover { color:var(--secondary-color); }
+        .nav-right { display:flex; align-items:center; gap:20px; flex:0 0 auto; }
+        .nav-link { color:var(--primary-color); text-decoration:none; display:flex; align-items:center; gap:8px; transition:var(--transition); font-size:14px; font-weight:500; }
+        .nav-link:hover { color:var(--secondary-color); }
+        .nav-link i { font-size:18px; }
+        .cart-icon-only { position:relative; color:var(--primary-color); transition:var(--transition); }
+        .cart-icon-only:hover { color:var(--secondary-color); }
+        .cart-icon-only i { font-size:20px; }
+        .cart-count { position:absolute; top:-6px; right:-10px; background:var(--accent-color); color:#fff; font-size:9px; font-weight:600; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; line-height:1; }
+
+        /* Search Overlay */
+        .search-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; display:none; align-items:flex-start; justify-content:center; padding-top:100px; }
+        .search-overlay.active { display:flex; }
+        .search-overlay-content { background:#fff; width:90%; max-width:600px; border-radius:10px; padding:20px; animation:slideDown 0.3s ease; }
+        @keyframes slideDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+        .search-overlay-header { display:flex; align-items:center; gap:15px; }
+        .search-overlay-input { flex:1; padding:12px 15px; border:2px solid #e0e0e0; border-radius:8px; font-size:16px; outline:none; }
+        .search-overlay-input:focus { border-color:var(--secondary-color); }
+        .search-overlay-close { background:none; border:none; font-size:24px; cursor:pointer; color:var(--primary-color); }
+        .search-overlay-btn { background:var(--secondary-color); color:#fff; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; font-weight:600; transition:var(--transition); }
+        .search-overlay-btn:hover { background:var(--primary-color); }
+
+        /* Sidebar */
+        .sidebar-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:none; opacity:0; transition:opacity 0.3s; }
+        .sidebar-overlay.active { display:block; opacity:1; }
+        .sidebar { position:fixed; top:0; left:-350px; width:320px; height:100vh; background:#fff; z-index:1001; transition:left 0.3s; box-shadow:2px 0 20px rgba(0,0,0,0.1); overflow-y:auto; }
+        .sidebar.active { left:0; }
+        .sidebar-header { display:flex; justify-content:space-between; align-items:center; padding:20px; border-bottom:1px solid #e0e0e0; background:#1a1a1a; color:#fff; }
+        .sidebar-header h3 { font-family:'Playfair Display',serif; font-size:20px; }
+        .sidebar-close { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; transition:0.3s; }
+        .sidebar-close:hover { transform:rotate(90deg); }
+        .sidebar-menu { list-style:none; padding:10px 0; }
+        .sidebar-item a { display:flex; align-items:center; gap:15px; padding:15px 20px; text-decoration:none; color:#333; transition:0.3s; font-size:15px; font-weight:500; }
+        .sidebar-item a:hover { background:#f8f9fa; padding-left:30px; color:#8B7355; }
+        .sidebar-item i { font-size:18px; width:20px; }
+        .badge { background:#ff6b6b; color:#fff; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:600; margin-left:auto; }
+        .discount-badge { background:#ff6b6b; color:#fff; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:700; margin-left:auto; animation:pulse 1.5s infinite; }
+        @keyframes pulse { 0%{transform:scale(1)} 50%{transform:scale(1.1)} 100%{transform:scale(1)} }
+        .new-arrival a { background:linear-gradient(135deg,#f8f9fa,#fff5f5); }
+        .sale-item a { background:linear-gradient(135deg,#fff5f5,#ffe8e8); font-weight:600; }
+        .sidebar-footer { padding:20px; border-top:1px solid #e0e0e0; }
+        .sidebar-contact h4 { color:#1a1a1a; margin-bottom:10px; font-size:16px; }
+        .sidebar-contact p { font-size:13px; color:#666; margin:8px 0; display:flex; align-items:center; gap:10px; }
+        .sidebar-contact i { width:16px; color:#8B7355; }
+
+        /* Product Detail */
+        .product-detail { max-width:1300px; margin:40px auto; padding:0 5%; display:flex; gap:60px; flex-wrap:wrap; }
+        .product-image { flex:0 0 50%; min-width:300px; }
+        .product-image img { width:100%; max-height:600px; object-fit:cover; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.08); cursor:pointer; transition:0.3s; }
+        .product-image img:hover { opacity:0.9; }
+        .product-info { flex:1; min-width:280px; }
+        .product-info h1 { font-family:'Playfair Display',serif; font-size:32px; margin-bottom:10px; color:var(--primary-color); }
+        .price { font-size:22px; font-weight:600; color:var(--secondary-color); margin-bottom:15px; }
+        .original-price { text-decoration:line-through; color:#999; margin-right:10px; font-size:18px; font-weight:400; }
+        .sale-price { color:#ff6b6b; }
+        .sku { font-size:14px; color:#888; margin-bottom:20px; }
+        .detail-list { margin-bottom:25px; }
+        .detail-item { display:flex; padding:8px 0; border-bottom:1px solid #eee; }
+        .detail-label { width:140px; font-weight:600; color:#555; }
+        .detail-value { color:#222; }
+
+        /* Quantity & Size */
+        .selectors { display:flex; gap:30px; align-items:center; margin:25px 0; flex-wrap:wrap; }
+        .quantity-selector { display:flex; align-items:center; gap:10px; border:1px solid #ddd; border-radius:30px; padding:5px 10px; }
+        .quantity-selector button { background:none; border:none; font-size:20px; cursor:pointer; width:30px; height:30px; border-radius:50%; transition:0.2s; color:#333; }
+        .quantity-selector button:hover { background:#f0f0f0; }
+        .quantity-selector input { width:40px; text-align:center; border:none; font-size:16px; font-weight:600; }
+        .size-selector { display:flex; gap:10px; align-items:center; }
+        .size-btn { padding:8px 16px; border:2px solid #ccc; background:white; border-radius:30px; cursor:pointer; transition:var(--transition); font-weight:500; }
+        .size-btn.active,.size-btn:hover { border-color:var(--secondary-color); background:var(--secondary-color); color:#fff; }
+
+        /* Add to Cart Button */
+        .add-to-cart-btn { display:block; width:100%; padding:14px 0; background:var(--primary-color); color:#fff; border:none; border-radius:50px; font-size:16px; font-weight:600; letter-spacing:0.5px; cursor:pointer; transition:var(--transition); margin-top:20px; position:relative; overflow:hidden; }
+        .add-to-cart-btn:hover { background:var(--secondary-color); transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,0.15); }
+        .add-to-cart-btn::after { content:''; position:absolute; top:50%; left:50%; width:0; height:0; border-radius:50%; background:rgba(255,255,255,0.3); transform:translate(-50%,-50%); transition:width 0.6s, height 0.6s; }
+        .add-to-cart-btn:hover::after { width:300px; height:300px; }
+
+        /* Buy It Now Button */
+        .buy-now-btn { display:block; width:100%; padding:14px 0; background:var(--accent-color); color:#fff; border:none; border-radius:50px; font-size:16px; font-weight:600; letter-spacing:0.5px; cursor:pointer; transition:var(--transition); margin-top:10px; position:relative; overflow:hidden; }
+        .buy-now-btn:hover { background:#e55a5a; transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,0.15); }
+        .buy-now-btn::after { content:''; position:absolute; top:50%; left:50%; width:0; height:0; border-radius:50%; background:rgba(255,255,255,0.3); transform:translate(-50%,-50%); transition:width 0.6s, height 0.6s; }
+        .buy-now-btn:hover::after { width:300px; height:300px; }
+
+        /* Accordion */
+        .accordion { margin-top:30px; border-top:1px solid #ddd; }
+        .accordion-item { border-bottom:1px solid #ddd; }
+        .accordion-header { padding:15px 0; display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-weight:500; }
+        .accordion-content { display:none; padding-bottom:15px; color:#555; font-size:14px; }
+        .accordion-content.open { display:block; }
+        .accordion-header i { transition:transform 0.3s; }
+        .accordion-header.open i { transform:rotate(45deg); }
+
+        /* Lightbox */
+        .lightbox-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:5000; justify-content:center; align-items:center; }
+        .lightbox-overlay.active { display:flex; }
+        .lightbox-overlay img { max-width:90%; max-height:90%; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,0.5); animation:zoomIn 0.3s ease; }
+        @keyframes zoomIn { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
+        .lightbox-close { position:absolute; top:20px; right:40px; color:#fff; font-size:36px; cursor:pointer; z-index:5001; transition:transform 0.3s; }
+        .lightbox-close:hover { transform:rotate(90deg); color:#ff6b6b; }
+
+        /* Suggested Products */
+        .suggested-section { max-width:1300px; margin:60px auto; padding:0 5%; }
+        .suggested-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:25px; }
+        .suggested-card { background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.05); transition:all 0.3s; }
+        .suggested-card:hover { transform:translateY(-8px); box-shadow:0 20px 40px rgba(0,0,0,0.1); }
+        .suggested-card a { text-decoration:none; color:inherit; }
+        .suggested-card img { width:100%; height:280px; object-fit:cover; display:block; transition:transform 0.5s; }
+        .suggested-card:hover img { transform:scale(1.05); }
+        .suggested-card-body { padding:12px; }
+        .suggested-card-body h4 { font-size:14px; font-weight:500; margin-bottom:5px; }
+        .suggested-card-body .price { font-size:14px; font-weight:600; color:var(--secondary-color); }
+        .suggested-card-body .original-price { font-size:13px; }
+
+        /* Notification */
+        .notification { position:fixed; bottom:20px; right:20px; background:#1a1a1a; color:#fff; padding:15px 30px; border-radius:10px; box-shadow:0 5px 20px rgba(0,0,0,0.3); transform:translateX(100%); opacity:0; transition:all 0.3s; z-index:10000; font-size:14px; }
+        .notification.show { transform:translateX(0); opacity:1; }
+
+        /* Footer */
+        .site-footer { background:#1a1a1a; color:#ccc; padding:60px 5% 20px; margin-top:80px; }
+        .footer-container { max-width:1300px; margin:0 auto; display:flex; flex-wrap:wrap; gap:40px; justify-content:space-between; }
+        .footer-col { flex:1 1 220px; min-width:200px; }
+        .footer-col h3,.footer-col h4 { color:#fff; margin-bottom:20px; font-family:'Playfair Display',serif; font-size:22px; }
+        .footer-col h4 { font-size:16px; font-weight:600; }
+        .footer-col p { font-size:14px; line-height:1.8; margin-bottom:20px; }
+        .footer-col ul { list-style:none; padding:0; }
+        .footer-col ul li { margin-bottom:10px; }
+        .footer-col ul li a { color:#ccc; text-decoration:none; transition:0.3s; font-size:14px; }
+        .footer-col ul li a:hover { color:#8B7355; padding-left:5px; }
+        .contact-info li { display:flex; align-items:center; gap:10px; font-size:14px; }
+        .contact-info i { width:16px; color:#8B7355; }
+        .social-icons { display:flex; gap:15px; margin-top:20px; }
+        .social-icons a { display:flex; align-items:center; justify-content:center; width:40px; height:40px; background:rgba(255,255,255,0.1); border-radius:50%; color:#fff; font-size:16px; transition:0.3s; }
+        .social-icons a:hover { background:#8B7355; transform:translateY(-3px); }
+        .footer-bottom { text-align:center; padding-top:30px; margin-top:40px; border-top:1px solid rgba(255,255,255,0.1); font-size:13px; color:#888; }
+
+        @media screen and (max-width:768px) {
+            .product-detail{flex-direction:column;gap:30px}
+            .product-image{flex:0 0 100%}
+            .suggested-grid{grid-template-columns:repeat(2,1fr)}
+            .nav-link span{display:none}
+            .brand-logo{font-size:24px}
+            .sidebar{width:280px;left:-280px}
+        }
+        @media screen and (max-width:480px) {
+            .navbar{padding:10px 3%}
+            .brand-logo{font-size:20px;letter-spacing:2px}
+            .sidebar{width:100%;left:-100%}
+            .top-bar{padding:8px 3%;font-size:10px}
+            .nav-link{font-size:12px}
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar" data-aos="fade-down" data-aos-duration="600">
+        <div class="top-bar-content">
+            <i class="fas fa-truck"></i>
+            <span>FREE SHIPPING NATIONWIDE</span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                <button class="search-icon-btn" id="searchIconBtn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="nav-center"><a href="/" class="brand-logo">SAIFI'S</a></div>
+            <div class="nav-right">
+                <a href="/signin" class="nav-link"><i class="far fa-user"></i><span>Sign In</span></a>
+                <a href="/cart" class="nav-link cart-icon-only"><i class="fas fa-shopping-bag"></i><span class="cart-count" id="cartCount">{{ cart_count }}</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Overlay -->
+    <div class="search-overlay" id="searchOverlay">
+        <div class="search-overlay-content">
+            <div class="search-overlay-header">
+                <input type="text" id="searchOverlayInput" class="search-overlay-input" placeholder="Search for clothes...">
+                <button class="search-overlay-btn" id="searchOverlayBtn"><i class="fas fa-search"></i> Search</button>
+                <button class="search-overlay-close" id="searchOverlayClose"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header"><h3>Categories</h3><button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button></div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-item new-arrival"><a href="/#newNowSection"><i class="fas fa-star"></i><span>New Now</span><span class="badge">NEW</span></a></li>
+            <li class="sidebar-item"><a href="/#summerWearSection"><i class="fas fa-sun"></i><span>Summer Wear</span></a></li>
+            <li class="sidebar-item"><a href="/#winterWearSection"><i class="fas fa-snowflake"></i><span>Winter Wear</span></a></li>
+            <li class="sidebar-item sale-item"><a href="/sale"><i class="fas fa-tag"></i><span>FLAT 30% OFF</span><span class="discount-badge">30%</span></a></li>
+        </ul>
+        <div class="sidebar-footer"><div class="sidebar-contact"><h4>Need Help?</h4><p><i class="fas fa-phone"></i> +92 300 1234567</p><p><i class="fas fa-envelope"></i> support@saifis.com</p></div></div>
+    </div>
+
+    <!-- Product Detail -->
+    <main class="product-detail" data-aos="fade-up">
+        <div class="product-image">
+            <img src="{{ product.image }}" alt="{{ product.name }}" id="mainProductImage">
+        </div>
+        <div class="product-info" data-aos="fade-left">
+            <h1>{{ product.name }}</h1>
+            <div class="price">
+                {% if product.get('original_price') %}
+                    <span class="original-price">Rs. {{ product.original_price | int }}</span>
+                    <span class="sale-price">Rs. {{ product.price | int }}</span>
+                {% else %}
+                    Rs. {{ product.price | int }}
+                {% endif %}
+            </div>
+            <div class="sku">SKU: {{ product.sku }}</div>
+            <div class="detail-list">
+                <div class="detail-item"><span class="detail-label">Design Details:</span><span class="detail-value">{{ product.design_details }}</span></div>
+                <div class="detail-item"><span class="detail-label">Style:</span><span class="detail-value">{{ product.style }}</span></div>
+                <div class="detail-item"><span class="detail-label">Fit:</span><span class="detail-value">{{ product.fit }}</span></div>
+                <div class="detail-item"><span class="detail-label">Fabric:</span><span class="detail-value">{{ product.fabric }}</span></div>
+                <div class="detail-item"><span class="detail-label">Composition:</span><span class="detail-value">{{ product.composition }}</span></div>
+            </div>
+            <div class="selectors">
+                <div class="quantity-selector">
+                    <button onclick="changeQuantity(-1)">−</button>
+                    <input type="number" id="quantity" value="1" min="1" readonly>
+                    <button onclick="changeQuantity(1)">+</button>
+                </div>
+                <div class="size-selector" id="sizeSelector">
+                    <span>Size: </span>
+                    {% for size in product.sizes %}
+                        <button class="size-btn {% if loop.first %}active{% endif %}" data-size="{{ size }}">{{ size }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+            <button class="add-to-cart-btn" id="addToCartBtn" data-aos="zoom-in" data-id="{{ product.id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" data-image="{{ product.image }}" data-sku="{{ product.sku }}">Add to Cart</button>
+            <button class="buy-now-btn" id="buyNowBtn" data-aos="zoom-in" data-aos-delay="100">Buy It Now</button>
+            <div class="accordion">
+                <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)">Details & Care <i class="fas fa-plus"></i></div><div class="accordion-content">Machine wash cold, do not bleach, tumble dry low, iron low heat.</div></div>
+                <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)">Shipping & Deliveries <i class="fas fa-plus"></i></div><div class="accordion-content">Free shipping nationwide. Estimated delivery 3-5 business days.</div></div>
+                <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)">Return & Exchange <i class="fas fa-plus"></i></div><div class="accordion-content">Easy returns within 7 days of delivery. Item must be unused with tags.</div></div>
+                <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)">Disclaimer <i class="fas fa-plus"></i></div><div class="accordion-content">Colors may vary slightly due to lighting effects.</div></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Lightbox -->
+    <div class="lightbox-overlay" id="lightbox"><span class="lightbox-close" id="lightboxClose">&times;</span><img src="" alt="Product Image" id="lightboxImg"></div>
+
+    <!-- Suggested Products (no heading) -->
+    {% if suggested_products %}
+    <section class="suggested-section">
+        <div class="suggested-grid">
+            {% for p in suggested_products %}
+            <div class="suggested-card" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
+                <a href="/product/{{ p.id }}">
+                    <img src="{{ p.image }}" alt="{{ p.name }}">
+                    <div class="suggested-card-body">
+                        <h4>{{ p.name }}</h4>
+                        <div class="price">
+                            {% if p.get('original_price') %}<span class="original-price">Rs. {{ p.original_price | int }}</span><span class="sale-price">Rs. {{ p.price | int }}</span>
+                            {% else %}PKR {{ p.price }}{% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-col"><h3>SAIFI'S</h3><p>Premium clothing for men & women. Quality fabrics, stylish designs, and free shipping nationwide.</p><div class="social-icons"><a href="#"><i class="fab fa-facebook-f"></i></a><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-pinterest-p"></i></a></div></div>
+            <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="/">Home</a></li><li><a href="/#newNowSection">New Now</a></li><li><a href="/#summerWearSection">Summer Wear</a></li><li><a href="/#winterWearSection">Winter Wear</a></li><li><a href="/sale">Sale</a></li></ul></div>
+            <div class="footer-col"><h4>Customer Service</h4><ul><li><a href="#">Contact Us</a></li><li><a href="#">Shipping Policy</a></li><li><a href="#">Returns & Exchange</a></li><li><a href="#">FAQ</a></li></ul></div>
+            <div class="footer-col"><h4>Contact Info</h4><ul class="contact-info"><li><i class="fas fa-map-marker-alt"></i> 123 Fashion Street, Lahore, Pakistan</li><li><i class="fas fa-phone"></i> +92 300 1234567</li><li><i class="fas fa-envelope"></i> support@saifis.com</li></ul></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2025 SAIFI'S. All rights reserved.</p></div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        $(function(){
+            AOS.init({duration:800, once:true, offset:100});
+            $('#sidebarToggle').click(function(){$('#sidebar').addClass('active');$('#sidebarOverlay').addClass('active');$('body').css('overflow','hidden')});
+            $('#sidebarClose,#sidebarOverlay').click(function(){$('#sidebar').removeClass('active');$('#sidebarOverlay').removeClass('active');$('body').css('overflow','auto')});
+            $('#searchIconBtn').click(function(){$('#searchOverlay').addClass('active');$('#searchOverlayInput').focus()});
+            $('#searchOverlayClose').click(function(){$('#searchOverlay').removeClass('active')});
+            $('#searchOverlay').click(function(e){if(e.target===this)$(this).removeClass('active')});
+            $('#searchOverlayBtn').click(function(){performSearch()});
+            $('#searchOverlayInput').keypress(function(e){if(e.which===13)performSearch()});
+            function performSearch(){var q=$('#searchOverlayInput').val().trim();if(q){window.location.href='/search?q='+encodeURIComponent(q);$('#searchOverlay').removeClass('active')}}
+            function getCartCount(){$.get('/get-cart-count',function(r){$('#cartCount').text(r.cart_count)})}
+            getCartCount();
+            $('#addToCartBtn').click(function(e){
+                e.preventDefault();var btn=$(this);var quantity=parseInt($('#quantity').val());var size=$('#sizeSelector .size-btn.active').data('size');
+                if(!size){showNotification('Please select a size.');return}
+                var item={id:btn.data('id'),name:btn.data('name'),price:btn.data('price'),image:btn.data('image'),sku:btn.data('sku'),size:size,quantity:quantity};
+                $.ajax({url:'/add-to-cart',method:'POST',contentType:'application/json',data:JSON.stringify(item),success:function(r){if(r.success){$('#cartCount').text(r.cart_count);showNotification('Added to cart!')}},error:function(){showNotification('Error adding to cart')}})
+            });
+            $('#buyNowBtn').click(function(e){
+                e.preventDefault();var btn=$('#addToCartBtn');var quantity=parseInt($('#quantity').val());var size=$('#sizeSelector .size-btn.active').data('size');
+                if(!size){showNotification('Please select a size.');return}
+                var item={id:btn.data('id'),name:btn.data('name'),price:btn.data('price'),image:btn.data('image'),sku:btn.data('sku'),size:size,quantity:quantity};
+                $.ajax({url:'/add-to-cart',method:'POST',contentType:'application/json',data:JSON.stringify(item),success:function(r){if(r.success){$('#cartCount').text(r.cart_count);window.location.href='/cart'}},error:function(){showNotification('Error adding to cart')}})
+            });
+            function showNotification(msg){var n=$('<div class="notification">'+msg+'</div>').appendTo('body');setTimeout(function(){n.addClass('show')},100);setTimeout(function(){n.removeClass('show');setTimeout(function(){n.remove()},300)},2000)}
+            $('#mainProductImage').click(function(){var src=$(this).attr('src');$('#lightboxImg').attr('src',src);$('#lightbox').addClass('active');$('body').css('overflow','hidden')});
+            $('#lightboxClose').click(function(){$('#lightbox').removeClass('active');$('body').css('overflow','auto')});
+            $('#lightbox').click(function(e){if(e.target===this){$(this).removeClass('active');$('body').css('overflow','auto')}});
+            $(document).keydown(function(e){if(e.key==='Escape'&&$('#lightbox').hasClass('active')){$('#lightbox').removeClass('active');$('body').css('overflow','auto')}});
+        });
+        function changeQuantity(d){var q=document.getElementById('quantity');var c=parseInt(q.value)+d;if(c>=1)q.value=c}
+        document.querySelectorAll('.size-btn').forEach(b=>{b.addEventListener('click',function(){document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')})});
+        function toggleAccordion(h){var c=h.nextElementSibling;var i=h.querySelector('i');if(c.classList.contains('open')){c.classList.remove('open');h.classList.remove('open');i.style.transform='rotate(0deg)'}else{c.classList.add('open');h.classList.add('open');i.style.transform='rotate(45deg)'}}
+    </script>
+</body>
+</html>

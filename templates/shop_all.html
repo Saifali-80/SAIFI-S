@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop All - SAIFI'S</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #8B7355;
+            --accent-color: #ff6b6b;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); }
+
+        /* Top Bar */
+        .top-bar { background-color: #8B7355; color: #fff; padding: 10px 5%; text-align: center; font-size: 12px; font-weight: 500; letter-spacing: 2px; }
+        .top-bar-content { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .top-bar-content i { font-size: 14px; animation: truckBounce 2s infinite; }
+        @keyframes truckBounce { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+        .top-bar-content span { font-weight: 600; }
+
+        /* Navbar */
+        .navbar { background: #fff; padding: 15px 5%; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 999; }
+        .nav-container { display: flex; align-items: center; justify-content: space-between; max-width: 1400px; margin: 0 auto; }
+        .nav-left { display: flex; align-items: center; gap: 15px; flex: 0 0 auto; }
+        .sidebar-toggle, .search-icon-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--primary-color); padding: 5px; transition: var(--transition); }
+        .sidebar-toggle:hover, .search-icon-btn:hover { color: var(--secondary-color); }
+        .nav-center { position: absolute; left: 50%; transform: translateX(-50%); }
+        .brand-logo { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: var(--primary-color); text-decoration: none; letter-spacing: 3px; transition: var(--transition); }
+        .brand-logo:hover { color: var(--secondary-color); }
+        .nav-right { display: flex; align-items: center; gap: 20px; flex: 0 0 auto; }
+        .nav-link { color: var(--primary-color); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: var(--transition); font-size: 14px; font-weight: 500; }
+        .nav-link:hover { color: var(--secondary-color); }
+        .nav-link i { font-size: 18px; }
+        .cart-icon-only { position: relative; color: var(--primary-color); transition: var(--transition); }
+        .cart-icon-only:hover { color: var(--secondary-color); }
+        .cart-icon-only i { font-size: 20px; }
+        .cart-count { position: absolute; top: -6px; right: -10px; background: var(--accent-color); color: #fff; font-size: 9px; font-weight: 600; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; line-height: 1; }
+
+        /* Search Overlay */
+        .search-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; display: none; align-items: flex-start; justify-content: center; padding-top: 100px; }
+        .search-overlay.active { display: flex; }
+        .search-overlay-content { background: #fff; width: 90%; max-width: 600px; border-radius: 10px; padding: 20px; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .search-overlay-header { display: flex; align-items: center; gap: 15px; }
+        .search-overlay-input { flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; outline: none; }
+        .search-overlay-input:focus { border-color: var(--secondary-color); }
+        .search-overlay-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--primary-color); }
+        .search-overlay-btn { background: var(--secondary-color); color: #fff; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: var(--transition); }
+        .search-overlay-btn:hover { background: var(--primary-color); }
+
+        /* Sidebar */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .sidebar-overlay.active { display: block; opacity: 1; }
+        .sidebar { position: fixed; top: 0; left: -350px; width: 320px; height: 100vh; background: #fff; z-index: 1001; transition: left 0.3s ease; box-shadow: 2px 0 20px rgba(0,0,0,0.1); overflow-y: auto; }
+        .sidebar.active { left: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #e0e0e0; background: #1a1a1a; color: #fff; }
+        .sidebar-header h3 { font-family: 'Playfair Display', serif; font-size: 20px; }
+        .sidebar-close { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; transition: 0.3s; }
+        .sidebar-close:hover { transform: rotate(90deg); }
+        .sidebar-menu { list-style: none; padding: 10px 0; }
+        .sidebar-item a { display: flex; align-items: center; gap: 15px; padding: 15px 20px; text-decoration: none; color: #333; transition: 0.3s; font-size: 15px; font-weight: 500; }
+        .sidebar-item a:hover { background: #f8f9fa; padding-left: 30px; color: #8B7355; }
+        .sidebar-item i { font-size: 18px; width: 20px; }
+        .badge { background: #ff6b6b; color: #fff; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; margin-left: auto; }
+        .discount-badge { background: #ff6b6b; color: #fff; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-left: auto; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .new-arrival a { background: linear-gradient(135deg, #f8f9fa, #fff5f5); }
+        .sale-item a { background: linear-gradient(135deg, #fff5f5, #ffe8e8); font-weight: 600; }
+        .sidebar-footer { padding: 20px; border-top: 1px solid #e0e0e0; }
+        .sidebar-contact h4 { color: #1a1a1a; margin-bottom: 10px; font-size: 16px; }
+        .sidebar-contact p { font-size: 13px; color: #666; margin: 8px 0; display: flex; align-items: center; gap: 10px; }
+        .sidebar-contact i { width: 16px; color: #8B7355; }
+
+        /* Shop All Content */
+        .shop-all-section { padding: 60px 5%; }
+        .shop-all-heading { font-family: 'Playfair Display', serif; font-size: 48px; font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: 40px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; max-width: 1300px; margin: 0 auto; }
+
+        .product-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease; display: flex; flex-direction: column; }
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .product-card-link { text-decoration: none; color: inherit; display: block; }
+        .product-card img { width: 100%; height: 300px; object-fit: cover; display: block; transition: transform 0.5s; }
+        .product-card:hover img { transform: scale(1.05); }
+        .product-card-body { padding: 15px; }
+        .product-card-body h4 { font-size: 16px; font-weight: 500; margin-bottom: 5px; color: #1a1a1a; }
+        .product-card-body .price { font-size: 15px; font-weight: 600; color: #8B7355; }
+
+        .card-add-to-cart { background: var(--primary-color); color: #fff; border: none; padding: 12px 15px; font-size: 13px; font-weight: 500; cursor: pointer; transition: var(--transition); width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: auto; border-radius: 0 0 12px 12px; position: relative; overflow: hidden; }
+        .card-add-to-cart:hover { background: var(--secondary-color); }
+        .card-add-to-cart::after { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(255,255,255,0.3); transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s; }
+        .card-add-to-cart:hover::after { width: 300px; height: 300px; }
+
+        /* Notification */
+        .notification { position: fixed; bottom: 20px; right: 20px; background: #1a1a1a; color: #fff; padding: 15px 30px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); transform: translateX(100%); opacity: 0; transition: all 0.3s ease; z-index: 10000; font-size: 14px; }
+        .notification.show { transform: translateX(0); opacity: 1; }
+
+        /* Footer */
+        .site-footer { background: #1a1a1a; color: #ccc; padding: 60px 5% 20px; margin-top: 80px; }
+        .footer-container { max-width: 1300px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; }
+        .footer-col { flex: 1 1 220px; min-width: 200px; }
+        .footer-col h3, .footer-col h4 { color: #fff; margin-bottom: 20px; font-family: 'Playfair Display', serif; font-size: 22px; }
+        .footer-col h4 { font-size: 16px; font-weight: 600; }
+        .footer-col p { font-size: 14px; line-height: 1.8; margin-bottom: 20px; }
+        .footer-col ul { list-style: none; padding: 0; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: #ccc; text-decoration: none; transition: 0.3s; font-size: 14px; }
+        .footer-col ul li a:hover { color: #8B7355; padding-left: 5px; }
+        .contact-info li { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+        .contact-info i { width: 16px; color: #8B7355; }
+        .social-icons { display: flex; gap: 15px; margin-top: 20px; }
+        .social-icons a { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; color: #fff; font-size: 16px; transition: 0.3s; }
+        .social-icons a:hover { background: #8B7355; transform: translateY(-3px); }
+        .footer-bottom { text-align: center; padding-top: 30px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 13px; color: #888; }
+
+        @media screen and (max-width: 768px) {
+            .nav-link span { display: none; }
+            .brand-logo { font-size: 24px; }
+            .sidebar { width: 280px; left: -280px; }
+            .shop-all-heading { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar" data-aos="fade-down" data-aos-duration="600">
+        <div class="top-bar-content">
+            <i class="fas fa-truck"></i>
+            <span>FREE SHIPPING NATIONWIDE</span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                <button class="search-icon-btn" id="searchIconBtn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="nav-center"><a href="/" class="brand-logo">SAIFI'S</a></div>
+            <div class="nav-right">
+                <a href="/signin" class="nav-link"><i class="far fa-user"></i><span>Sign In</span></a>
+                <a href="/cart" class="nav-link cart-icon-only"><i class="fas fa-shopping-bag"></i><span class="cart-count" id="cartCount">{{ cart_count }}</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Overlay -->
+    <div class="search-overlay" id="searchOverlay">
+        <div class="search-overlay-content">
+            <div class="search-overlay-header">
+                <input type="text" id="searchOverlayInput" class="search-overlay-input" placeholder="Search for clothes...">
+                <button class="search-overlay-btn" id="searchOverlayBtn"><i class="fas fa-search"></i> Search</button>
+                <button class="search-overlay-close" id="searchOverlayClose"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Categories</h3>
+            <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-item new-arrival"><a href="/#newNowSection"><i class="fas fa-star"></i><span>New Now</span><span class="badge">NEW</span></a></li>
+            <li class="sidebar-item"><a href="/#summerWearSection"><i class="fas fa-sun"></i><span>Summer Wear</span></a></li>
+            <li class="sidebar-item"><a href="/#winterWearSection"><i class="fas fa-snowflake"></i><span>Winter Wear</span></a></li>
+            <li class="sidebar-item sale-item"><a href="/sale"><i class="fas fa-tag"></i><span>FLAT 30% OFF</span><span class="discount-badge">30%</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="sidebar-contact">
+                <h4>Need Help?</h4>
+                <p><i class="fas fa-phone"></i> +92 300 1234567</p>
+                <p><i class="fas fa-envelope"></i> support@saifis.com</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shop All Content -->
+    <main class="shop-all-section">
+        <h1 class="shop-all-heading" data-aos="fade-right">Shop All Products</h1>
+        <div class="product-grid" data-aos="fade-up" data-aos-delay="100">
+            {% for product in products %}
+            <div class="product-card" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 50 }}">
+                <a href="/product/{{ product.id }}" class="product-card-link">
+                    <img src="{{ product.image }}" alt="{{ product.name }}">
+                    <div class="product-card-body">
+                        <h4>{{ product.name }}</h4>
+                        <p class="price">
+                            {% if product.get('original_price') %}
+                                <span style="text-decoration: line-through; color: #999; margin-right: 8px;">Rs. {{ product.original_price | int }}</span>
+                                <span style="color: #ff6b6b;">Rs. {{ product.price | int }}</span>
+                            {% else %}
+                                PKR {{ product.price }}
+                            {% endif %}
+                        </p>
+                    </div>
+                </a>
+                <button class="card-add-to-cart" data-aos="zoom-in"
+                    data-id="{{ product.id }}" 
+                    data-name="{{ product.name }}" 
+                    data-price="{{ product.price }}" 
+                    data-image="{{ product.image }}" 
+                    data-sku="{{ product.sku }}">
+                    <i class="fas fa-shopping-bag"></i> Add to Cart
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>SAIFI'S</h3>
+                <p>Premium clothing for men & women. Quality fabrics, stylish designs, and free shipping nationwide.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/#newNowSection">New Now</a></li>
+                    <li><a href="/#summerWearSection">Summer Wear</a></li>
+                    <li><a href="/#winterWearSection">Winter Wear</a></li>
+                    <li><a href="/sale">Sale</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Returns & Exchange</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact Info</h4>
+                <ul class="contact-info">
+                    <li><i class="fas fa-map-marker-alt"></i> 123 Fashion Street, Lahore, Pakistan</li>
+                    <li><i class="fas fa-phone"></i> +92 300 1234567</li>
+                    <li><i class="fas fa-envelope"></i> support@saifis.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 SAIFI'S. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        $(function(){
+            AOS.init({duration:800, once:true, offset:100});
+
+            // Sidebar Toggle
+            $('#sidebarToggle').click(function(){
+                $('#sidebar').addClass('active'); $('#sidebarOverlay').addClass('active'); $('body').css('overflow','hidden');
+            });
+            $('#sidebarClose, #sidebarOverlay').click(function(){
+                $('#sidebar').removeClass('active'); $('#sidebarOverlay').removeClass('active'); $('body').css('overflow','auto');
+            });
+
+            // Search Overlay
+            $('#searchIconBtn').click(function(){
+                $('#searchOverlay').addClass('active'); $('#searchOverlayInput').focus();
+            });
+            $('#searchOverlayClose').click(function(){
+                $('#searchOverlay').removeClass('active');
+            });
+            $('#searchOverlay').click(function(e){ if(e.target===this) $(this).removeClass('active'); });
+            $('#searchOverlayBtn').click(function(){ performSearch(); });
+            $('#searchOverlayInput').keypress(function(e){ if(e.which===13) performSearch(); });
+
+            function performSearch(){
+                var q = $('#searchOverlayInput').val().trim();
+                if(q){ window.location.href='/search?q='+encodeURIComponent(q); }
+            }
+
+            // Cart count
+            function getCartCount(){ $.get('/get-cart-count',function(r){ $('#cartCount').text(r.cart_count); }); }
+            getCartCount();
+
+            // Add to cart
+            $(document).on('click', '.card-add-to-cart', function(e){
+                e.preventDefault();
+                var btn = $(this);
+                var item = {
+                    id: btn.data('id'),
+                    name: btn.data('name'),
+                    price: btn.data('price'),
+                    image: btn.data('image'),
+                    sku: btn.data('sku'),
+                    size: 'M',
+                    quantity: 1
+                };
+                $.ajax({
+                    url: '/add-to-cart',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(item),
+                    success: function(r){
+                        if(r.success){
+                            $('#cartCount').text(r.cart_count);
+                            showNotification('Added to cart!');
+                        }
+                    }
+                });
+            });
+
+            // Notification
+            function showNotification(msg){
+                var n = $('<div class="notification">'+msg+'</div>').appendTo('body');
+                setTimeout(function(){ n.addClass('show'); }, 100);
+                setTimeout(function(){ n.removeClass('show'); setTimeout(function(){ n.remove(); }, 300); }, 2000);
+            }
+
+            // Escape key
+            $(document).keydown(function(e){ if(e.key==='Escape'){ $('#sidebar').removeClass('active'); $('#sidebarOverlay').removeClass('active'); $('#searchOverlay').removeClass('active'); $('body').css('overflow','auto'); }});
+        });
+    </script>
+</body>
+</html>

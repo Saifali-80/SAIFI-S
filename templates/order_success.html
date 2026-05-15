@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Success - SAIFI'S</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #8B7355;
+            --accent-color: #ff6b6b;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+
+        /* Success Container */
+        .success-container {
+            text-align: center;
+            background: #fff;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 90%;
+        }
+        .success-icon {
+            font-size: 60px;
+            color: #2ecc71;
+            margin-bottom: 20px;
+        }
+        h1 { font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 10px; color: var(--primary-color); }
+        p { color: #666; margin-bottom: 20px; }
+        .order-number {
+            background: #f1f1f1;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .back-home {
+            display: inline-block;
+            background: var(--primary-color);
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .back-home:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .back-home::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        .back-home:hover::after { width: 300px; height: 300px; }
+
+        /* Footer */
+        .site-footer { background: #1a1a1a; color: #ccc; padding: 60px 5% 20px; margin-top: 80px; width: 100%; position: absolute; bottom: 0; left: 0; }
+        .footer-container { max-width: 1300px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; }
+        .footer-col { flex: 1 1 220px; min-width: 200px; }
+        .footer-col h3, .footer-col h4 { color: #fff; margin-bottom: 20px; font-family: 'Playfair Display', serif; font-size: 22px; }
+        .footer-col h4 { font-size: 16px; font-weight: 600; }
+        .footer-col p { font-size: 14px; line-height: 1.8; margin-bottom: 20px; }
+        .footer-col ul { list-style: none; padding: 0; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: #ccc; text-decoration: none; transition: 0.3s; font-size: 14px; }
+        .footer-col ul li a:hover { color: #8B7355; padding-left: 5px; }
+        .contact-info li { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+        .contact-info i { width: 16px; color: #8B7355; }
+        .social-icons { display: flex; gap: 15px; margin-top: 20px; }
+        .social-icons a { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; color: #fff; font-size: 16px; transition: 0.3s; }
+        .social-icons a:hover { background: #8B7355; transform: translateY(-3px); }
+        .footer-bottom { text-align: center; padding-top: 30px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 13px; color: #888; }
+    </style>
+</head>
+<body>
+    <div class="success-container" data-aos="zoom-in" data-aos-duration="600">
+        <div class="success-icon" data-aos="fade-down" data-aos-delay="200">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h1 data-aos="fade-up" data-aos-delay="400">Thank You!</h1>
+        <p data-aos="fade-up" data-aos-delay="600">Your order has been placed successfully.</p>
+        <div class="order-number" data-aos="fade-up" data-aos-delay="800">
+            Order #{{ order.order_id }}
+        </div>
+        <p data-aos="fade-up" data-aos-delay="1000">We'll send you a confirmation email shortly.</p>
+        <a href="/" class="back-home" data-aos="zoom-in" data-aos-delay="1200">Continue Shopping</a>
+    </div>
+
+    <!-- Footer (optional, appears at bottom) -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>SAIFI'S</h3>
+                <p>Premium clothing for men & women. Quality fabrics, stylish designs, and free shipping nationwide.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/#newNowSection">New Now</a></li>
+                    <li><a href="/#summerWearSection">Summer Wear</a></li>
+                    <li><a href="/#winterWearSection">Winter Wear</a></li>
+                    <li><a href="/sale">Sale</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Returns & Exchange</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact Info</h4>
+                <ul class="contact-info">
+                    <li><i class="fas fa-map-marker-alt"></i> 123 Fashion Street, Lahore, Pakistan</li>
+                    <li><i class="fas fa-phone"></i> +92 300 1234567</li>
+                    <li><i class="fas fa-envelope"></i> support@saifis.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 SAIFI'S. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+    </script>
+</body>
+</html>
